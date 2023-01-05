@@ -1,7 +1,7 @@
    10 osnewl=&FFE7
    20 oswrch=&FFEE
    30 osbyte=&FFF4
-   40 tmp=&80
+   40 tmp=&80:csum=&81
    50 SOH=&1:EOT=&4
    60 ACK=&6:NAK=&15
    70 FOR pass%=0 TO 3 STEP 3
@@ -20,13 +20,13 @@
   200 JSR readByte:TYA:CLC:ADC tmp
   210 CMP #&FF:BNE fail
   220 LDA #128:STA tmp
-  230 .loop
-  240 JSR readByte
-  250 TYA:JSR oswrch
-  260 DEC tmp
-  270 BNE loop
-  280 JSR readByte
-  290 \ TODO checksum
+  230 LDA #0:STA csum
+  240 .loop
+  250 JSR readByte
+  260 TYA:CLC:ADC csum:STA csum
+  270 DEC tmp
+  280 BNE loop
+  290 JSR readByte:CPY csum:BNE fail
   300 LDA #ACK:JSR sendByte
   310 JMP startBlock
   320 RTS
