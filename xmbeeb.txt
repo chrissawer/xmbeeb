@@ -1,0 +1,36 @@
+   10 osnewl=&FFE7
+   20 oswrch=&FFEE
+   30 osbyte=&FFF4
+   40 SOH=&1
+   50 EOT=&4
+   60 FOR pass%=0 TO 3 STEP 3
+   70 P%=&2000
+   80 [
+   90 OPT pass%
+  100 LDA #2:LDX #2:JSR osbyte \ enable RS423 input
+  110 LDA #ASC("C"):JSR sendByte
+  120 \ TODO flush buffer?
+  130 JSR readByte:CPY #SOH:BNE fail
+  140 JSR readByte:STY &81
+  150 JSR readByte:TYA:CLC:ADC &81
+  160 CMP #&FF:BNE fail
+  170 .loop
+  180 JSR readByte
+  190 TYA:JSR oswrch
+  200 JMP loop
+  210 RTS
+  220 .fail
+  230 LDA #ASC("X"):JSR oswrch
+  240 RTS
+  250 .sendByte
+  260 PHA
+  270 LDA #3:LDX #3:JSR osbyte \ enable RS423 output
+  280 PLA:JSR oswrch
+  290 LDA #3:LDX #0:JSR osbyte \ enable screen output
+  300 RTS
+  310 .readByte \ blocks, returns byte in Y
+  320 LDA #&91:LDX #1:JSR osbyte
+  330 BCS readByte
+  340 RTS
+  350 ]
+  360 NEXT
