@@ -9,7 +9,7 @@
    90 P%=&3000
   100 [
   110 OPT pass%
-  120 LDA #&10:STA memptrH:LDA #&80:STA memptrL \ &1100-&80
+  120 LDA #&1F:STA memptrH:LDA #&80:STA memptrL \ &2000-&80
   130 LDA #7:LDX #7:JSR osbyte \ 9600 receive
   140 LDA #8:LDX #7:JSR osbyte \ 9600 transmit
   150 LDA #2:LDX #2:JSR osbyte \ enable RS423 input
